@@ -13,7 +13,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
 
         :root {
-            --bg-color: #79a6d8;
+            --bg-color-start: #79a6d8;
+            --bg-color-end: #8e44ad;
             --bird-color: #f1c40f;
             --pipe-color: #2d3436;
             --message-box-bg: rgba(44, 62, 80, 0.9);
@@ -32,10 +33,11 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #3498db, #8e44ad);
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
             color: var(--text-color);
             overflow: hidden;
             text-align: center;
+            transition: background 0.5s ease-in-out;
         }
 
         .container {
@@ -53,7 +55,7 @@
         }
 
         #gameCanvas {
-            background-color: var(--bg-color);
+            background-color: transparent; /* Changed to transparent to show body background */
             border-radius: 10px;
             box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
             border: 2px solid #34495e;
@@ -164,6 +166,7 @@
         // Get the canvas and its context
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
+        const body = document.body;
 
         // Game state variables
         let isGameRunning = false;
@@ -201,6 +204,17 @@
         const startButton = document.getElementById('startButton');
         const restartButton = document.getElementById('restartButton');
 
+        // Color palettes for achievements
+        const colorPalettes = {
+            'default': ['#3498db', '#8e44ad'],
+            '10': ['#2ecc71', '#3498db'],
+            '25': ['#f39c12', '#e67e22'],
+            '50': ['#e74c3c', '#c0392b'],
+            '100': ['#9b59b6', '#8e44ad'],
+            '200': ['#34495e', '#2c3e50'],
+            '500': ['#f1c40f', '#e67e22']
+        };
+
         // --- Game Logic Functions ---
 
         /**
@@ -210,6 +224,29 @@
             canvas.width = Math.min(window.innerWidth * 0.8, 400);
             canvas.height = Math.min(window.innerHeight * 0.7, 500);
             bird.y = canvas.height / 2;
+        }
+
+        /**
+         * Changes the body background color based on the score.
+         */
+        function updateBackground() {
+            let palette;
+            if (score >= 500) {
+                palette = colorPalettes['500'];
+            } else if (score >= 200) {
+                palette = colorPalettes['200'];
+            } else if (score >= 100) {
+                palette = colorPalettes['100'];
+            } else if (score >= 50) {
+                palette = colorPalettes['50'];
+            } else if (score >= 25) {
+                palette = colorPalettes['25'];
+            } else if (score >= 10) {
+                palette = colorPalettes['10'];
+            } else {
+                palette = colorPalettes['default'];
+            }
+            body.style.background = `linear-gradient(135deg, ${palette[0]}, ${palette[1]})`;
         }
 
         /**
@@ -286,6 +323,7 @@
                     score++;
                     pipes[i].passed = true;
                     currentScoreElement.textContent = score;
+                    updateBackground();
                 }
 
                 // Remove pipes that have moved off screen
@@ -357,6 +395,7 @@
             bird.velocity = 0;
             pipes = [];
             frameCount = 0;
+            updateBackground();
             gameLoop();
         }
 
@@ -395,6 +434,7 @@
         // Initial setup
         resizeCanvas();
         highScoreElement.textContent = highScore;
+        updateBackground();
 
     </script>
 </body>
