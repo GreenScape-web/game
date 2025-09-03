@@ -1,49 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flappy Bird</title>
+    <title>لعبة الطائر المرفرف</title>
+    <meta name="google-site-verification" content="l6FSehriSN6V1o0fUyEB7SLy7Ym0pepQBHWJM0tbyV0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Press+Start+2P&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #79a6d8;
+            --bird-color: #f1c40f;
+            --pipe-color: #2d3436;
+            --message-box-bg: rgba(44, 62, 80, 0.9);
+            --message-box-border: #ecf0f1;
+            --text-color: #ecf0f1;
+            --button-color: #27ae60;
+            --button-hover-color: #2ecc71;
+            --font-family: 'Tajawal', sans-serif;
+        }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-family);
             margin: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #2c3e50;
-            color: #ecf0f1;
+            background: linear-gradient(135deg, #3498db, #8e44ad);
+            color: var(--text-color);
             overflow: hidden;
             text-align: center;
         }
 
         .container {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #34495e;
+            background: rgba(52, 73, 94, 0.7);
             padding: 2rem;
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             transition: transform 0.3s ease-in-out;
+            border: 2px solid #5d6d7e;
         }
-        
+
         #gameCanvas {
-            background-color: #7f8c8d;
+            background-color: var(--bg-color);
             border-radius: 10px;
             box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid #34495e;
         }
 
         .game-info {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             display: flex;
             justify-content: space-between;
             width: 100%;
@@ -52,9 +69,10 @@
         }
 
         .score, .high-score {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            color: #ecf0f1;
+            color: var(--text-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .message-box {
@@ -62,47 +80,62 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(44, 62, 80, 0.9);
-            border-radius: 15px;
-            padding: 2.5rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            background-color: var(--message-box-bg);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
             text-align: center;
             z-index: 1000;
-            transition: all 0.3s ease-in-out;
-            border: 2px solid #ecf0f1;
+            transition: all 0.4s ease-in-out;
+            border: 3px solid var(--message-box-border);
+            animation: fadeIn 0.5s ease-out;
         }
 
         .message-box h1 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             margin-top: 0;
             color: #e74c3c;
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
         }
-        
+
         .message-box p {
-            font-size: 1.2rem;
-            margin: 1rem 0;
+            font-size: 1.5rem;
+            margin: 1.5rem 0;
             color: #bdc3c7;
         }
 
         .message-box button {
-            background-color: #27ae60;
+            background-color: var(--button-color);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
-            font-size: 1.1rem;
-            border-radius: 8px;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+            font-family: var(--font-family);
         }
 
         .message-box button:hover {
-            background-color: #2ecc71;
-            transform: translateY(-2px);
+            background-color: var(--button-hover-color);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .message-box button:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
 
         .hidden {
             display: none;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
     </style>
 </head>
@@ -116,7 +149,7 @@
     </div>
     
     <div id="startScreen" class="message-box">
-        <h1>مرحبا بك في لعبة الطائر!</h1>
+        <h1>مرحبا بك في لعبة الطائر المرفرف!</h1>
         <p>انقر أو اضغط على الشاشة للعب</p>
         <button id="startButton">بدء اللعبة</button>
     </div>
@@ -140,20 +173,24 @@
         // Player (Bird) properties
         const bird = {
             x: 50,
-            y: 0, // Will be set to the center of the canvas on load
+            y: 0, 
             radius: 12,
             gravity: 0.2,
             velocity: 0,
             lift: -4.5,
-            color: '#f1c40f'
+            color: '#f1c40f',
+            strokeColor: '#e67e22',
+            strokeWidth: 2,
         };
 
         // Pipe properties
         let pipes = [];
-        const pipeWidth = 40;
-        const pipeGap = 120; // The gap between the top and bottom pipes
+        const pipeWidth = 45;
+        const pipeGap = 130; 
         let frameCount = 0;
-        const pipeInterval = 90; // How often new pipes are generated
+        const pipeInterval = 90; 
+        const pipeSpeed = 2;
+        const pipeColor = '#2d3436';
 
         // UI elements
         const currentScoreElement = document.getElementById('currentScore');
@@ -182,7 +219,10 @@
             ctx.beginPath();
             ctx.arc(bird.x, bird.y, bird.radius, 0, Math.PI * 2);
             ctx.fillStyle = bird.color;
+            ctx.strokeStyle = bird.strokeColor;
+            ctx.lineWidth = bird.strokeWidth;
             ctx.fill();
+            ctx.stroke();
             ctx.closePath();
         }
 
@@ -202,12 +242,11 @@
         /**
          * Draws a pipe on the canvas.
          * @param {number} x - The x-coordinate of the pipe.
-         * @param {number} y - The y-coordinate of the top of the pipe's gap.
          * @param {number} height - The height of the top pipe.
          */
         function drawPipe(x, height) {
             // Top pipe
-            ctx.fillStyle = '#2d3436';
+            ctx.fillStyle = pipeColor;
             ctx.fillRect(x, 0, pipeWidth, height);
             // Bottom pipe
             ctx.fillRect(x, height + pipeGap, pipeWidth, canvas.height - (height + pipeGap));
@@ -227,7 +266,7 @@
 
             // Move existing pipes and remove old ones
             for (let i = pipes.length - 1; i >= 0; i--) {
-                pipes[i].x -= 2;
+                pipes[i].x -= pipeSpeed;
 
                 // Check for collision
                 if (
